@@ -83,6 +83,13 @@ def post_page(post: "Post"):
 
     with base_page(*ttl):
         header(*ttl)
+
+        with tag("article", klass="post"):
+            with tag("header", klass="post__header"):
+                line("h2", post.title, klass="post__heading")
+            with tag("main", klass="post__main"):
+                doc.asis(post.html)
+
     return doc.getvalue()
 
 
