@@ -103,9 +103,11 @@ p {
     }
 
     a {
-        color: #009CFF;
+        &:link {
+            color: #009CFF;
+        }
 
-        &::visited {
+        &:visited {
             color: #E561FF;
         }
     }
