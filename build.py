@@ -14,24 +14,15 @@ import yattag
 from slugify import slugify
 
 BLOG_TITLE = "the blog"
-MY_NAME = "patrick gingras"
+MY_NAME = os.environ["NAME"]
+EMAIL = os.environ["EMAIL"]
 HEADER_LINKS = [
     ("github", "https://github.com/p7g"),
     ("linkedin", "https://linkedin.com/pat775"),
 ]
 
-CSS = """
-body {
-    max-width: 65ch;
-    margin: 0 auto;
-}
-
-p {
-    font-size: 18px;
-    line-height: 1.45;
-    font-family: Georgia, serif;
-}
-"""
+with open("styles.css", "r") as f:
+    CSS = f.read()
 
 
 def header(doc, tag, text, line):
@@ -55,6 +46,15 @@ def base_page(doc, tag, text, line):
 
     with tag("html"):
         with tag("head"):
+            doc.stag(
+                "link",
+                rel="stylesheet",
+                href="https://fonts.googleapis.com/css?family="
+                "IBM+Plex+Serif:400,400i,700,700i"
+                "|Faustina:400,400i,700,700i"
+                "|Inconsolata"
+                "&display=swap",
+            )
             line("style", CSS)
         with tag("body"):
             yield
@@ -81,10 +81,9 @@ def home_page(posts: List["Post"]):
                         )
                         if post.description is not None:
                             line(
-                                "p",
-                                post.description,
-                                klass="main__post__description",
+                                "p", post.description, klass="main__post__description",
                             )
+
     return doc.getvalue()
 
 
@@ -98,8 +97,18 @@ def post_page(post: "Post"):
             with tag("article", klass="post"):
                 with tag("header", klass="post__header"):
                     line("h2", post.title, klass="post__heading")
+                    line(
+                        "time",
+                        post.date.strftime("%c"),
+                        time=post.date.isoformat(),
+                        klass="post__heading__time",
+                    )
                 with tag("main", klass="post__main"):
                     doc.asis(post.html)
+        with tag("footer", klass="post__footer"):
+            doc.stag("hr")
+            text("Feedback? ")
+            line("a", "Email me", href=f"mailto:{EMAIL}", klass="post__footer__email")
 
     return doc.getvalue()
 
@@ -149,11 +158,11 @@ os.makedirs(os.path.join("build", "posts"), exist_ok=True)
 
 # generate main page
 with open(os.path.join("build", "index.html"), "w") as f:
-    f.write(yattag.indent(home_page(posts)))
+    f.write(home_page(posts))
 
 for post in posts:
     post_dir = os.path.join("build", "posts", post.slug)
     os.makedirs(post_dir, exist_ok=False)
 
     with open(os.path.join(post_dir, "index.html"), "w") as f:
-        f.write(yattag.indent(post_page(post)))
+        f.write(post_page(post))
