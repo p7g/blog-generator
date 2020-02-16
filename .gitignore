@@ -1,0 +1,4 @@
+build
+.vim
+.mypy_cache
+posts/*.md
