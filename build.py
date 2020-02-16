@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -125,6 +126,7 @@ with os.scandir("posts") as it:
 
 posts = list(sorted(posts, key=attrgetter("date")))
 
+shutil.rmtree("build")
 os.makedirs(os.path.join("build", "posts"), exist_ok=True)
 
 # generate main page
