@@ -22,7 +22,14 @@ HEADER_LINKS = [
 
 CSS = """
 body {
-    margin: 0;
+    max-width: 65ch;
+    margin: 0 auto;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.45;
+    font-family: Georgia, serif;
 }
 """
 
@@ -36,6 +43,9 @@ def header(doc, tag, text, line):
         with tag("section", klass="header__links"):
             for link_text, address in HEADER_LINKS:
                 line("a", link_text, href=address, klass="header__links__link")
+
+        doc.stag("hr")
+
     return doc
 
 
@@ -84,11 +94,12 @@ def post_page(post: "Post"):
     with base_page(*ttl):
         header(*ttl)
 
-        with tag("article", klass="post"):
-            with tag("header", klass="post__header"):
-                line("h2", post.title, klass="post__heading")
-            with tag("main", klass="post__main"):
-                doc.asis(post.html)
+        with tag("main", klass="main"):
+            with tag("article", klass="post"):
+                with tag("header", klass="post__header"):
+                    line("h2", post.title, klass="post__heading")
+                with tag("main", klass="post__main"):
+                    doc.asis(post.html)
 
     return doc.getvalue()
 
