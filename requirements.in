@@ -2,3 +2,5 @@ yattag
 python-frontmatter
 mistletoe
 python-slugify
+python-dotenv
+libsass

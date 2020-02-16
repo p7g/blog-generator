@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import shutil
 
@@ -9,9 +11,13 @@ from typing import List, Optional
 
 import frontmatter
 import mistletoe
+import sass
 import yattag
 
+from dotenv import load_dotenv
 from slugify import slugify
+
+load_dotenv()
 
 BLOG_TITLE = "the blog"
 MY_NAME = os.environ["NAME"]
@@ -20,9 +26,6 @@ HEADER_LINKS = [
     ("github", "https://github.com/p7g"),
     ("linkedin", "https://linkedin.com/pat775"),
 ]
-
-with open("styles.css", "r") as f:
-    CSS = f.read()
 
 
 def header(doc, tag, text, line):
@@ -34,6 +37,7 @@ def header(doc, tag, text, line):
         with tag("section", klass="header__links"):
             for link_text, address in HEADER_LINKS:
                 line("a", link_text, href=address, klass="header__links__link")
+                text(" ")
 
         doc.stag("hr")
 
@@ -47,15 +51,18 @@ def base_page(doc, tag, text, line):
     with tag("html"):
         with tag("head"):
             doc.stag(
+                "meta", name="viewport", content="width=device-width, initial-scale=1"
+            )
+            doc.stag(
                 "link",
                 rel="stylesheet",
                 href="https://fonts.googleapis.com/css?family="
                 "IBM+Plex+Serif:400,400i,700,700i"
                 "|Faustina:400,400i,700,700i"
                 "|Inconsolata"
-                "&display=swap",
+                "&display=block",
             )
-            line("style", CSS)
+            doc.stag("link", rel="stylesheet", href="/css/styles.css")
         with tag("body"):
             yield
 
@@ -70,15 +77,15 @@ def home_page(posts: List["Post"]):
             with tag("section", klass="main__post_list"):
                 line("h2", "posts", klass="main__post_list__heading")
                 for post in posts:
-                    with tag("article"):
+                    with tag("article", klass="main__post"):
                         with tag("a", href=post.url):
                             line("h3", post.title, klass="main__post__title")
-                        line(
-                            "time",
-                            post.date.strftime("%c"),
-                            klass="main__post__date",
-                            datetime=post.date.isoformat(),
-                        )
+                        with tag("small", klass="main__post__date"):
+                            line(
+                                "time",
+                                post.date.strftime("%c"),
+                                datetime=post.date.isoformat(),
+                            )
                         if post.description is not None:
                             line(
                                 "p", post.description, klass="main__post__description",
@@ -159,6 +166,8 @@ os.makedirs(os.path.join("build", "posts"), exist_ok=True)
 # generate main page
 with open(os.path.join("build", "index.html"), "w") as f:
     f.write(home_page(posts))
+
+sass.compile(dirname=("css", os.path.join("build", "css")), output_style="compressed")
 
 for post in posts:
     post_dir = os.path.join("build", "posts", post.slug)
