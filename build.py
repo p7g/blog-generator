@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
+import datetime as dt
 import os
 import shutil
 
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime
 from operator import attrgetter
 from typing import List, Optional
 
@@ -83,7 +83,7 @@ def home_page(posts: List["Post"]):
                         with tag("small", klass="main__post__date"):
                             line(
                                 "time",
-                                post.date.strftime("%c"),
+                                post.date.strftime("%B %d, %Y"),
                                 datetime=post.date.isoformat(),
                             )
                         if post.description is not None:
@@ -106,7 +106,7 @@ def post_page(post: "Post"):
                     line("h2", post.title, klass="post__heading")
                     line(
                         "time",
-                        post.date.strftime("%c"),
+                        post.date.strftime("%B %d, %Y"),
                         time=post.date.isoformat(),
                         klass="post__heading__time",
                     )
@@ -124,7 +124,7 @@ def post_page(post: "Post"):
 class Post:
     title: str
     description: Optional[str]
-    date: datetime
+    date: dt.date
     html: str
 
     @property
@@ -148,11 +148,15 @@ with os.scandir("posts") as it:
 
         post_raw = frontmatter.loads(text)
 
+        date = post_raw["date"]
+        if isinstance(date, str):
+            date = dt.date.fromisoformat(date)
+
         posts.append(
             Post(
                 title=post_raw["title"],
                 description=post_raw.get("description"),
-                date=datetime.fromisoformat(post_raw["date"]),
+                date=date,
                 html=mistletoe.markdown(post_raw.content),
             )
         )

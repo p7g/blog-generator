@@ -10,10 +10,12 @@ body {
 }
 
 pre, code {
+    max-width: 100%;
+    overflow-x: auto;
     font-family: Inconsolata, monospace;
 }
 
-h1, h2, h3, h4, h5, h6, .header__links {
+h1, h2, h3, h4, h5, h6, .header {
     font-family: Faustina, sans-serif;
 }
 
