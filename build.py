@@ -46,6 +46,7 @@ def base_page(doc, tag, text, line):
 
     with tag("html"):
         with tag("head"):
+            doc.stag("meta", charset="utf-8")
             doc.stag(
                 "meta", name="viewport", content="width=device-width, initial-scale=1"
             )
