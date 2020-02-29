@@ -19,8 +19,8 @@ from slugify import slugify
 load_dotenv()
 
 BLOG_TITLE = "the blog"
-MY_NAME = os.environ["NAME"]
-EMAIL = os.environ["EMAIL"]
+MY_NAME = "Patrick Gingras"
+EMAIL = "p.7g@icloud.com"
 HEADER_LINKS = [
     ("github", "https://github.com/p7g"),
     ("linkedin", "https://linkedin.com/pat775"),
@@ -76,7 +76,6 @@ def home_page(posts: List["Post"]):
 
         with tag("main", klass="main"):
             with tag("section", klass="main__post_list"):
-                line("h2", "posts", klass="main__post_list__heading")
                 for post in posts:
                     with tag("article", klass="main__post"):
                         with tag("a", href=post.url):
@@ -115,8 +114,8 @@ def post_page(post: "Post"):
                     doc.asis(post.html)
         with tag("footer", klass="post__footer"):
             doc.stag("hr")
-            text("Feedback? ")
-            line("a", "Email me", href=f"mailto:{EMAIL}", klass="post__footer__email")
+            text("Tell me I'm wrong: ")
+            line("a", EMAIL, href=f"mailto:{EMAIL}", klass="post__footer__email")
 
     return doc.getvalue()
 
