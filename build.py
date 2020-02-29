@@ -13,10 +13,7 @@ import frontmatter
 import mistletoe
 import yattag
 
-from dotenv import load_dotenv
 from slugify import slugify
-
-load_dotenv()
 
 BLOG_TITLE = "the blog"
 MY_NAME = "Patrick Gingras"
