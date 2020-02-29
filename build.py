@@ -162,7 +162,7 @@ with os.scandir("posts") as it:
         )
 
 
-posts = list(sorted(posts, key=attrgetter("date")))
+posts = list(sorted(posts, key=attrgetter("date"), reverse=True))
 
 shutil.rmtree("build")
 os.makedirs(os.path.join("build", "posts"), exist_ok=True)
