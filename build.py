@@ -11,7 +11,6 @@ from typing import List, Optional
 
 import frontmatter
 import mistletoe
-import sass
 import yattag
 
 from dotenv import load_dotenv
@@ -62,7 +61,9 @@ def base_page(doc, tag, text, line):
                 "|Inconsolata"
                 "&display=block",
             )
-            doc.stag("link", rel="stylesheet", href="/css/styles.css")
+
+            with open("styles.css", "r") as f:
+                line("style", f.read())
         with tag("body"):
             yield
 
@@ -170,8 +171,6 @@ os.makedirs(os.path.join("build", "posts"), exist_ok=True)
 # generate main page
 with open(os.path.join("build", "index.html"), "w") as f:
     f.write(home_page(posts))
-
-sass.compile(dirname=("css", os.path.join("build", "css")), output_style="compressed")
 
 for post in posts:
     post_dir = os.path.join("build", "posts", post.slug)
