@@ -104,7 +104,7 @@ def post_page(post: "Post"):
                     line(
                         "time",
                         post.date.strftime("%B %d, %Y"),
-                        time=post.date.isoformat(),
+                        datetime=post.date.isoformat(),
                         klass="post__heading__time",
                     )
                 with tag("main", klass="post__main"):
