@@ -41,7 +41,7 @@ def header(doc, tag, text, line):
 
 
 @contextmanager
-def base_page(doc, tag, text, line):
+def base_page(doc, tag, text, line, *, title: str = None):
     doc.asis("<!DOCTYPE html>")
 
     with tag("html"):
@@ -50,6 +50,7 @@ def base_page(doc, tag, text, line):
             doc.stag(
                 "meta", name="viewport", content="width=device-width, initial-scale=1"
             )
+            line("title", f'{title} | {BLOG_TITLE}' if title else BLOG_TITLE)
             doc.stag(
                 "link",
                 rel="stylesheet",
@@ -95,7 +96,7 @@ def home_page(posts: List["Post"]):
 def post_page(post: "Post"):
     doc, tag, text, line = ttl = yattag.Doc().ttl()
 
-    with base_page(*ttl):
+    with base_page(*ttl, title=post.title):
         header(*ttl)
 
         with tag("main", klass="main"):
