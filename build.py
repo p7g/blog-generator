@@ -26,6 +26,18 @@ HEADER_LINKS = [
 ]
 
 
+def deferred_stylesheet(doc, href: str):
+    doc.stag(
+        "link",
+        rel="preload",
+        **{"as": "style"},
+        href=href,
+        onload="this.onload=null; this.rel='stylesheet';",
+    )
+    with doc.tag("noscript"):
+        doc.stag("link", rel="stylesheet", href=href)
+
+
 def header(doc, tag, text, line):
     with tag("header", klass="header"):
         with tag("a", href="/", title="home"):
@@ -56,10 +68,9 @@ def base_page(doc, tag, text, line, *, title: str = None, description: str = Non
                 "meta", name="description", content=description or DEFAULT_DESCRIPTION,
             )
             line("title", f"{title} | {BLOG_TITLE}" if title else BLOG_TITLE)
-            doc.stag(
-                "link",
-                rel="stylesheet",
-                href="https://fonts.googleapis.com/css?family="
+            deferred_stylesheet(
+                doc,
+                "https://fonts.googleapis.com/css?family="
                 "IBM+Plex+Serif:400,400i,700,700i"
                 "|Faustina:400,400i,700,700i"
                 "|Inconsolata"
