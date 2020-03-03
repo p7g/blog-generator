@@ -14,6 +14,7 @@ import mistletoe
 import yattag
 
 from slugify import slugify
+from typogrify.filters import typogrify
 
 BLOG_TITLE = "the blog"
 DEFAULT_DESCRIPTION = "A cool and nice programming blog"
@@ -100,7 +101,8 @@ def home_page(posts: List["Post"]):
                 for post in posts:
                     with tag("article", klass="main__post"):
                         with tag("a", href=post.url):
-                            line("h3", post.title, klass="main__post__title")
+                            with tag("h3", klass="main__post__title"):
+                                doc.asis(typogrify(post.title))
                         with tag("small", klass="main__post__date"):
                             line(
                                 "time",
@@ -108,9 +110,10 @@ def home_page(posts: List["Post"]):
                                 datetime=post.date.isoformat(),
                             )
                         if post.description is not None:
-                            line(
-                                "p", post.description, klass="main__post__description",
-                            )
+                            with tag(
+                                "p", klass="main__post__description",
+                            ):
+                                doc.asis(typogrify(post.description))
 
     return doc.getvalue()
 
@@ -124,7 +127,8 @@ def post_page(post: "Post"):
         with tag("main", klass="main"):
             with tag("article", klass="post"):
                 with tag("header", klass="post__header"):
-                    line("h2", post.title, klass="post__heading")
+                    with tag("h2", klass="post__heading"):
+                        doc.asis(typogrify(post.title))
                     line(
                         "time",
                         post.date.strftime("%B %d, %Y"),
@@ -132,7 +136,7 @@ def post_page(post: "Post"):
                         klass="post__heading__time",
                     )
                 with tag("main", klass="post__main"):
-                    doc.asis(post.html)
+                    doc.asis(typogrify(post.html))
         with tag("footer", klass="post__footer"):
             doc.stag("hr")
             text("Tell me I'm wrong: ")
@@ -178,7 +182,7 @@ with os.scandir("posts") as it:
                 title=post_raw["title"],
                 description=post_raw.get("description"),
                 date=date,
-                html=mistletoe.markdown(post_raw.content),
+                html=mistletoe.markdown(post_raw.content).replace("&quot;", '"'),
             )
         )
 
