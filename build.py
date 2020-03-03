@@ -67,6 +67,12 @@ def base_page(doc, tag, text, line, *, title: str = None, description: str = Non
             doc.stag(
                 "meta", name="description", content=description or DEFAULT_DESCRIPTION,
             )
+            doc.stag(
+                "link",
+                rel="shortcut icon",
+                type="image/x-icon",
+                href="/static/favicon.ico",
+            )
             line("title", f"{title} | {BLOG_TITLE}" if title else BLOG_TITLE)
             deferred_stylesheet(
                 doc,
