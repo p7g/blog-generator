@@ -16,6 +16,7 @@ import yattag
 from slugify import slugify
 
 BLOG_TITLE = "the blog"
+DEFAULT_DESCRIPTION = "A cool and nice programming blog"
 MY_NAME = "Patrick Gingras"
 EMAIL = "p.7g@icloud.com"
 HEADER_LINKS = [
@@ -41,7 +42,7 @@ def header(doc, tag, text, line):
 
 
 @contextmanager
-def base_page(doc, tag, text, line, *, title: str = None):
+def base_page(doc, tag, text, line, *, title: str = None, description: str = None):
     doc.asis("<!DOCTYPE html>")
 
     with tag("html"):
@@ -50,7 +51,10 @@ def base_page(doc, tag, text, line, *, title: str = None):
             doc.stag(
                 "meta", name="viewport", content="width=device-width, initial-scale=1"
             )
-            line("title", f'{title} | {BLOG_TITLE}' if title else BLOG_TITLE)
+            doc.stag(
+                "meta", name="description", content=description or DEFAULT_DESCRIPTION,
+            )
+            line("title", f"{title} | {BLOG_TITLE}" if title else BLOG_TITLE)
             doc.stag(
                 "link",
                 rel="stylesheet",
@@ -96,7 +100,7 @@ def home_page(posts: List["Post"]):
 def post_page(post: "Post"):
     doc, tag, text, line = ttl = yattag.Doc().ttl()
 
-    with base_page(*ttl, title=post.title):
+    with base_page(*ttl, title=post.title, description=post.description):
         header(*ttl)
 
         with tag("main", klass="main"):
