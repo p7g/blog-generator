@@ -19,6 +19,7 @@ BLOG_TITLE = "the blog"
 DEFAULT_DESCRIPTION = "A cool and nice programming blog"
 MY_NAME = "Patrick Gingras"
 EMAIL = "p.7g@icloud.com"
+LANG = "en"
 HEADER_LINKS = [
     ("github", "https://github.com/p7g"),
     ("linkedin", "https://linkedin.com/pat775"),
@@ -45,7 +46,7 @@ def header(doc, tag, text, line):
 def base_page(doc, tag, text, line, *, title: str = None, description: str = None):
     doc.asis("<!DOCTYPE html>")
 
-    with tag("html"):
+    with tag("html", lang=LANG):
         with tag("head"):
             doc.stag("meta", charset="utf-8")
             doc.stag(
