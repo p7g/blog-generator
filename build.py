@@ -192,3 +192,6 @@ for post in posts:
 
     with open(os.path.join(post_dir, "index.html"), "w") as f:
         f.write(post_page(post))
+
+if os.path.exists("static"):
+    shutil.copytree("static", os.path.join("build", "static"))
