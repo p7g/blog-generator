@@ -23,7 +23,7 @@ EMAIL = "p.7g@icloud.com"
 LANG = "en"
 HEADER_LINKS = [
     ("github", "https://github.com/p7g"),
-    ("linkedin", "https://linkedin.com/pat775"),
+    ("linkedin", "https://linkedin.com/in/pat775"),
 ]
 
 
